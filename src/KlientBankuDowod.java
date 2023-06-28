@@ -61,8 +61,20 @@ public  class KlientBankuDowod extends KlientBanku {
     }
 
     @Override
+    public void wyszukaj(String id) {
+        System.out.println("Wyszukiwanie klienta (dowód osobisty): "+ "imie" +id+ getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
+        // Logika wyszukiwania klienta z dowodem osobistym
+        // np. wyszukanie klienta w bazie danych po numerze dowodu
+    }
+    @Override
     public void wyszukaj() {
-        System.out.println("Wyszukiwanie klienta (dowód osobisty): " + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
+        System.out.println("Wyszukiwanie klienta (dowód osobisty): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
+        // Logika wyszukiwania klienta z dowodem osobistym
+        // np. wyszukanie klienta w bazie danych po numerze dowodu
+    }
+    @Override
+    public void wyszukaj(String imie,String nazwisko) {
+        System.out.println("Wyszukiwanie klienta (dowód osobisty): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
         // Logika wyszukiwania klienta z dowodem osobistym
         // np. wyszukanie klienta w bazie danych po numerze dowodu
     }

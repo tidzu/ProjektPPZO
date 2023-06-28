@@ -9,7 +9,7 @@ public class Main {
         klient1.identyfikuj();
         klient1.dodaj();
         klient1.aktualizuj();
-        klient1.wyszukaj();
+        klient1.wyszukaj("ABV123456");
         klient1.usun();
 
         KlientBanku klient2 = new KlientBankuKarta("Anna", "Nowak", "1234567890123456");

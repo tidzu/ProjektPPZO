@@ -22,6 +22,8 @@ public abstract class KlientBanku {
 
     public abstract void aktualizuj();
 
+    public abstract void wyszukaj(String id);
+    public abstract void wyszukaj(String imie, String Nazwisko);
     public abstract void wyszukaj();
 
     public abstract void usun();

@@ -64,12 +64,23 @@ public class KlientBankuKarta extends KlientBanku {
     }
 
     @Override
-    public void wyszukaj() {
+    public void wyszukaj(String Id) {
         System.out.println("Wyszukiwanie klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
         // Logika wyszukiwania klienta z kartą płatniczą
         // np. wyszukanie klienta w bazie danych po numerze karty
     }
-
+    @Override
+    public void wyszukaj() {
+        System.out.println("Wyszukiwanie klienta (karta płatnicza): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerKarty);
+        // Logika wyszukiwania klienta z dowodem osobistym
+        // np. wyszukanie klienta w bazie danych po numerze dowodu
+    }
+    @Override
+    public void wyszukaj(String imie,String nazwisko) {
+        System.out.println("Wyszukiwanie klienta (karta płatnicza): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerKarty);
+        // Logika wyszukiwania klienta z dowodem osobistym
+        // np. wyszukanie klienta w bazie danych po numerze dowodu
+    }
     @Override
     public void usun() {
         System.out.println("Usuwanie klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
