@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-        KlientBanku klient1 = new KlientBankuDowod("Jan", "Kowalski", "AB123456");
+        ///KlientBanku klient1 = new KlientBankuDowod("Jan", "Kowalski", "AB123456");
         klient1.identyfikuj();
         klient1.dodaj();
         klient1.aktualizuj();
