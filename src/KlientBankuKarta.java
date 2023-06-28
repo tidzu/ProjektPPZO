@@ -55,19 +55,6 @@ public class KlientBankuKarta extends KlientBanku {
         }
     }
 
-    // Helper method to check if the card number is unique in the file
-    private boolean isCardNumberUnique(String cardNumber) throws IOException {
-        java.nio.file.Path filePath = java.nio.file.Paths.get("clients.txt");
-
-        if (java.nio.file.Files.exists(filePath)) {
-            // Read each line from the file and check if the card number exists
-            try (java.util.stream.Stream<String> lines = java.nio.file.Files.lines(filePath)) {
-                return lines.noneMatch(line -> line.contains(cardNumber));
-            }
-        }
-
-        return true; // If the file doesn't exist, consider the card number as unique
-    }
 
     @Override
     public void aktualizuj() {
@@ -89,4 +76,18 @@ public class KlientBankuKarta extends KlientBanku {
         // Logika usuwania klienta z kartą płatniczą
         // np. usunięcie klienta z bazy danych na podstawie numeru karty
     }
+    // Helper method to check if the card number is unique in the file
+    private boolean isCardNumberUnique(String cardNumber) throws IOException {
+        java.nio.file.Path filePath = java.nio.file.Paths.get("clients.txt");
+
+        if (java.nio.file.Files.exists(filePath)) {
+            // Read each line from the file and check if the card number exists
+            try (java.util.stream.Stream<String> lines = java.nio.file.Files.lines(filePath)) {
+                return lines.noneMatch(line -> line.contains(cardNumber));
+            }
+        }
+
+        return true; // If the file doesn't exist, consider the card number as unique
+    }
+
 }
