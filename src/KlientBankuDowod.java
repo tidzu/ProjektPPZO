@@ -1,6 +1,4 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 public  class KlientBankuDowod extends KlientBanku {
     private String numerDowodu;
@@ -72,9 +70,51 @@ public  class KlientBankuDowod extends KlientBanku {
     @Override
     public void usun() {
         System.out.println("Usuwanie klienta (dowód osobisty): " + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
-        // Logika usuwania klienta z dowodem osobistym
-        // np. usunięcie klienta z bazy danych na podstawie numeru dowodu
+
+        // Implement the logic to remove the client from the system
+        // For example, delete the client's record from a database or remove their file
+
+        // Add your specific logic here to remove the client with a payment card
+        // For example:
+        try {
+            // Open the file in read mode
+            BufferedReader reader = new BufferedReader(new FileReader("idClients.txt"));
+
+            // Create a temporary file to store the updated content
+            File tempFile = new File("tempFile.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            // Read each line from the file and check if the card number matches
+            String line;
+            boolean found = false;
+            while ((line = reader.readLine()) != null) {
+                String[] clientData = line.split(",");
+                if (clientData.length >= 3 && clientData[2].equals(numerDowodu)) {
+                    found = true;
+                    continue; // Skip the line with the matching card number
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+
+            reader.close();
+            writer.close();
+
+            // Replace the original file with the temporary file
+            if (found) {
+                File originalFile = new File("idClients.txt");
+                tempFile.renameTo(originalFile);
+                System.out.println("Client with payment card removed successfully.");
+            } else {
+                System.out.println("Error: Client with the specified card number not found.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle any file I/O errors here
+        }
     }
+
     // Helper method to check if the card number is unique in the file
     private boolean isCardNumberUnique(String idNumber ) throws IOException {
         java.nio.file.Path filePath = java.nio.file.Paths.get("idClients.txt");
