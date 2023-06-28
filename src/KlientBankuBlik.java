@@ -7,7 +7,7 @@ public class KlientBankuBlik extends KlientBanku {
     }
 
     public String getNumerBlik() {
-        return numerBlik;
+        //return numerBlik;
     }
 
     @Override
