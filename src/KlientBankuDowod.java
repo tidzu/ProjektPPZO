@@ -71,11 +71,6 @@ public  class KlientBankuDowod extends KlientBanku {
     public void usun() {
         System.out.println("Usuwanie klienta (dowód osobisty): " + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
 
-        // Implement the logic to remove the client from the system
-        // For example, delete the client's record from a database or remove their file
-
-        // Add your specific logic here to remove the client with a payment card
-        // For example:
         try {
             // Open the file in read mode
             BufferedReader reader = new BufferedReader(new FileReader("idClients.txt"));
@@ -103,7 +98,19 @@ public  class KlientBankuDowod extends KlientBanku {
             // Replace the original file with the temporary file
             if (found) {
                 File originalFile = new File("idClients.txt");
-                tempFile.renameTo(originalFile);
+
+                // Delete the original file
+                if (!originalFile.delete()) {
+                    System.out.println("Error: Failed to delete the original file.");
+                    return;
+                }
+
+                // Rename the temporary file to the original file
+                if (!tempFile.renameTo(originalFile)) {
+                    System.out.println("Error: Failed to rename the temporary file.");
+                    return;
+                }
+
                 System.out.println("Client with payment card removed successfully.");
             } else {
                 System.out.println("Error: Client with the specified card number not found.");
@@ -114,6 +121,7 @@ public  class KlientBankuDowod extends KlientBanku {
             // Handle any file I/O errors here
         }
     }
+
 
     // Helper method to check if the card number is unique in the file
     private boolean isCardNumberUnique(String idNumber ) throws IOException {
