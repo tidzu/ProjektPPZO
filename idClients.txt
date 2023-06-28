@@ -1,4 +1,3 @@
-Jan,Kowalski,AB123456
 Jan,Banach,ABV123456
 Jan,Kowki,ABB123456
 Jan,Kowfdsaalski,AMB123456
