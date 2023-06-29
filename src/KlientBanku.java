@@ -8,6 +8,13 @@ public abstract class KlientBanku {
         this.nazwisko = nazwisko;
     }
 
+    public void setImie(String imie) {
+            this.imie = imie;
+    }
+public void setNazwisko(String nazwisko)
+{
+    this.nazwisko = nazwisko;
+}
     public String getImie() {
         return imie;
     }

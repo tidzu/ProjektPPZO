@@ -12,6 +12,8 @@ public  class KlientBankuDowod extends KlientBanku {
         return numerDowodu;
     }
 
+    public void setNumerDowodu(String numerDowodu) {this.numerDowodu = numerDowodu;    }
+
     @Override
     public void identyfikuj() {
         System.out.println("Identyfikacja klienta (dowód osobisty): " + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
@@ -66,19 +68,80 @@ public  class KlientBankuDowod extends KlientBanku {
         // Logika wyszukiwania klienta z dowodem osobistym
         // np. wyszukanie klienta w bazie danych po numerze dowodu
     }
+
+
     @Override
     public void wyszukaj() {
-        System.out.println("Wyszukiwanie klienta (dowód osobisty): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
-        // Logika wyszukiwania klienta z dowodem osobistym
-        // np. wyszukanie klienta w bazie danych po numerze dowodu
-    }
-    @Override
-    public void wyszukaj(String imie,String nazwisko) {
-        System.out.println("Wyszukiwanie klienta (dowód osobisty): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
-        // Logika wyszukiwania klienta z dowodem osobistym
-        // np. wyszukanie klienta w bazie danych po numerze dowodu
+        System.out.println("Wyszukiwanie klienta (dowód osobisty): " + "id" + numerDowodu);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("idClients.txt"));
+            String line;
+            boolean found = false;
+
+            while ((line = reader.readLine()) != null) {
+                String[] clientData = line.split(",");
+                if (clientData.length >= 3 && clientData[2].equals(numerDowodu)) {
+                    found = true;
+                    setImie(clientData[0]);
+                    setNazwisko(clientData[1]);
+                    break;
+                }
+            }
+
+            reader.close();
+
+            if (found) {
+                System.out.println("Znaleziono klienta o podanym numerze dowodu.");
+                System.out.println("Imię: " + getImie());
+                System.out.println("Nazwisko: " + getNazwisko());
+            } else {
+                System.out.println("Nie znaleziono klienta o podanym numerze dowodu.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+
+    @Override
+    public void wyszukaj(String imie, String nazwisko) {
+        System.out.println("Wyszukiwanie klienta (dowód osobisty): " + imie + " " + nazwisko);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("idClients.txt"));
+            String line;
+            boolean found = false;
+
+            while ((line = reader.readLine()) != null) {
+                String[] clientData = line.split(",");
+                String klientImie = clientData[0];
+                String klientNazwisko = clientData[1];
+                if (klientImie.equalsIgnoreCase(imie) && klientNazwisko.equalsIgnoreCase(nazwisko)) {
+                    found = true;
+                    setImie(klientImie);
+                    setNazwisko(klientNazwisko);
+                    setNumerDowodu(clientData[2]);
+                    break;
+                }
+            }
+
+            reader.close();
+
+            if (found) {
+                System.out.println("Znaleziono klienta o podanym imieniu i nazwisku.");
+                System.out.println("Imię: " + getImie());
+                System.out.println("Nazwisko: " + getNazwisko());
+                System.out.println("Numer dowodu: " + getNumerDowodu());
+            } else {
+                System.out.println("Nie znaleziono klienta o podanym imieniu i nazwisku.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public void usun() {
         System.out.println("Usuwanie klienta (dowód osobisty): " + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
