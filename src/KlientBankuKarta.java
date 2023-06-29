@@ -1,7 +1,11 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
+
 public class KlientBankuKarta extends KlientBanku {
+
     private String numerKarty;
 
     public KlientBankuKarta(String imie, String nazwisko, String numerKarty) {
@@ -13,87 +17,236 @@ public class KlientBankuKarta extends KlientBanku {
         return numerKarty;
     }
 
-    @Override
-    public void identyfikuj() {
-        System.out.println("Identyfikacja klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
+    public void setNumerKarty(String numerKarty) {
+        this.numerKarty = numerKarty;
     }
 
+    @Override
+    public void identyfikuj() {
+        System.out.println("Identyfikacja klienta (numer karty bankowej): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
+    }
 
     @Override
     public void dodaj() {
-        // Additional logic for adding a client with a payment card
-        // For example, adding the client to a file, checking the uniqueness of the card number, etc.
-        System.out.println("Dodawanie klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
+        System.out.println("Dodawanie klienta (numer karty bankowej): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
 
-        // Add your specific logic here to add the client with a payment card
-        // For example:
         try {
-            // 1. Open the file in append mode
-            BufferedWriter writer = new BufferedWriter(new FileWriter("clients.txt", true));
-
-            // 2. Check if the card number is unique
-            boolean isUnique = isCardNumberUnique(numerKarty);
-            if (!isUnique) {
-                System.out.println("Error: Card number already exists in the file. Please choose a different card number.");
-                // Handle the error condition as per your application's requirements
-                writer.close(); // Close the file writer
+            // Sprawdzanie poprawności numeru karty bankowej
+            if (!isCardNumberValid(numerKarty)) {
+                System.out.println("Błąd: Podany numer karty bankowej jest niepoprawny.");
                 return;
             }
 
-            // 3. If unique, write the client details (name, card number) to the file
+            // Sprawdzanie unikalności numeru karty bankowej
+            if (!isCardNumberUnique(numerKarty)) {
+                System.out.println("Błąd: Podany numer karty bankowej jest już przypisany do innego klienta.");
+                return;
+            }
+
+            // Dodawanie klienta do pliku tekstowego
+            BufferedWriter writer = new BufferedWriter(new FileWriter("kartaClients.txt", true));
             writer.write(getImie() + "," + getNazwisko() + "," + numerKarty);
             writer.newLine();
-
-            // 4. Close the file writer
             writer.close();
 
-            System.out.println("Client with payment card added successfully.");
+            System.out.println("Klient został dodany.");
 
         } catch (IOException e) {
             e.printStackTrace();
-            // Handle any file I/O errors here
         }
     }
-
 
     @Override
     public void aktualizuj(String newImie, String newNazwisko) {
-        System.out.println("Aktualizacja klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
-        // Logika aktualizacji klienta z kartą płatniczą
-        // np. aktualizacja danych w bazie danych, zmiana numeru karty, itp.
+        System.out.println("Edycja danych klienta (numer karty bankowej): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("kartaClients.txt"));
+            File tempFile = new File("tempFile.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String line;
+            boolean found = false;
+            while ((line = reader.readLine()) != null) {
+                String[] clientData = line.split(",");
+                if (clientData.length >= 3 && clientData[2].equals(numerKarty)) {
+                    found = true;
+                    line = newImie + "," + newNazwisko + "," + numerKarty;
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+
+            reader.close();
+            writer.close();
+
+            if (found) {
+                File originalFile = new File("kartaClients.txt");
+
+                // Usuwanie oryginalnego pliku
+                if (!originalFile.delete()) {
+                    System.out.println("Błąd! Nie można usunąć oryginalnego pliku.");
+                    return;
+                }
+
+                // Zmiana nazwy tymczasowego pliku na oryginalną nazwę
+                if (!tempFile.renameTo(originalFile)) {
+                    System.out.println("Błąd! Nie można zmienić nazwy oryginalnego pliku.");
+                    return;
+                }
+
+                System.out.println("Dane klienta zostały zaktualizowane.");
+
+            } else {
+                System.out.println("Błąd: Nie znaleziono klienta o podanym numerze karty bankowej.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-
-    @Override
-    public void wyszukaj() {
-        System.out.println("Wyszukiwanie klienta (karta płatnicza): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerKarty);
-        // Logika wyszukiwania klienta z dowodem osobistym
-        // np. wyszukanie klienta w bazie danych po numerze dowodu
-    }
-    @Override
-    public void wyszukaj(String imie,String nazwisko) {
-        System.out.println("Wyszukiwanie klienta (karta płatnicza): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerKarty);
-        // Logika wyszukiwania klienta z dowodem osobistym
-        // np. wyszukanie klienta w bazie danych po numerze dowodu
-    }
     @Override
     public void usun() {
-        System.out.println("Usuwanie klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
-        // Logika usuwania klienta z kartą płatniczą
-        // np. usunięcie klienta z bazy danych na podstawie numeru karty
-    }
-    // Helper method to check if the card number is unique in the file
-    private boolean isCardNumberUnique(String cardNumber) throws IOException {
-        java.nio.file.Path filePath = java.nio.file.Paths.get("clients.txt");
+        System.out.println("Usuwanie klienta (numer karty bankowej): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
 
-        if (java.nio.file.Files.exists(filePath)) {
-            // Read each line from the file and check if the card number exists
-            try (java.util.stream.Stream<String> lines = java.nio.file.Files.lines(filePath)) {
-                return lines.noneMatch(line -> line.contains(cardNumber));
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("kartaClients.txt"));
+            File tempFile = new File("tempFile.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            String line;
+            boolean found = false;
+            while ((line = reader.readLine()) != null) {
+                String[] clientData = line.split(",");
+                if (clientData.length >= 3 && clientData[2].equals(numerKarty)) {
+                    found = true;
+                    continue;
+                }
+                writer.write(line);
+                writer.newLine();
             }
+
+            reader.close();
+            writer.close();
+
+            if (found) {
+                File originalFile = new File("kartaClients.txt");
+
+                // Usuwanie oryginalnego pliku
+                if (!originalFile.delete()) {
+                    System.out.println("Błąd! Nie można usunąć oryginalnego pliku.");
+                    return;
+                }
+
+                // Zmiana nazwy tymczasowego pliku na oryginalną nazwę
+                if (!tempFile.renameTo(originalFile)) {
+                    System.out.println("Błąd! Nie można zmienić nazwy oryginalnego pliku.");
+                    return;
+                }
+
+                System.out.println("Klient został usunięty.");
+            } else {
+                System.out.println("Błąd: Nie znaleziono klienta o podanym numerze karty bankowej.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void wyszukaj(String imie, String nazwisko) {
+        System.out.println("Wyszukiwanie klienta (numer karty bankowej): " + imie + " " + nazwisko);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("kartaClients.txt"));
+            String line;
+            boolean found = false;
+
+            while ((line = reader.readLine()) != null) {
+                String[] clientData = line.split(",");
+                String klientImie = clientData[0];
+                String klientNazwisko = clientData[1];
+                if (klientImie.equalsIgnoreCase(imie) && klientNazwisko.equalsIgnoreCase(nazwisko)) {
+                    found = true;
+                    setImie(klientImie);
+                    setNazwisko(klientNazwisko);
+                    setNumerKarty(clientData[2]);
+                    break;
+                }
+            }
+
+            reader.close();
+
+            if (found) {
+                System.out.println("Znaleziono klienta o podanym imieniu i nazwisku.");
+                System.out.println("Imię: " + getImie());
+                System.out.println("Nazwisko: " + getNazwisko());
+                System.out.println("Numer karty bankowej: " + getNumerKarty());
+            } else {
+                System.out.println("Błąd: Nie znaleziono klienta o podanym imieniu i nazwisku.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void wyszukaj() {
+        System.out.println("Wyszukiwanie klienta po numerze karty bankowej: " + "id" + numerKarty);
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader("kartaClients.txt"));
+            String line;
+            boolean found = false;
+
+            while ((line = reader.readLine()) != null) {
+                String[] clientData = line.split(",");
+                if (clientData.length >= 3 && clientData[2].equals(numerKarty)) {
+                    found = true;
+                    setImie(clientData[0]);
+                    setNazwisko(clientData[1]);
+                    break;
+                }
+            }
+
+            reader.close();
+
+            if (found) {
+                System.out.println("Znaleziono klienta o podanym numerze karty.");
+                System.out.println("Imię: " + getImie());
+                System.out.println("Nazwisko: " + getNazwisko());
+            } else {
+                System.out.println("Nie znaleziono klienta o podanym numerze karty.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private boolean isCardNumberValid(String cardNumber) {
+        if (cardNumber.length() != 16) {
+            return false;
         }
 
-        return true; // If the file doesn't exist, consider the card number as unique
+        try {
+            Long.parseLong(cardNumber);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
+    private boolean isCardNumberUnique(String cardNumber) {
+        try (Stream<String> lines = Files.lines(Paths.get("kartaClients.txt"))) {
+            return lines.noneMatch(line -> {
+                String[] clientData = line.split(",");
+                return clientData.length >= 3 && clientData[2].equals(cardNumber);
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

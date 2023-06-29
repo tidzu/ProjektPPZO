@@ -21,14 +21,15 @@ public class Main {
         klient1.identyfikuj();
        // klient1.usun();
 
-/*
-        KlientBanku klient2 = new KlientBankuKarta("Anna", "Nowak", "1234567890123456");
+
+        KlientBanku klient2 = new KlientBankuKarta("Anna", "Nowak", "1212121212121212");
         klient2.identyfikuj();
         klient2.dodaj();
-        klient2.aktualizuj();
+        klient2.aktualizuj("Ann","Nowakowsky");
         klient2.wyszukaj();
+        klient2.wyszukaj("anna","nowak");
         klient2.usun();
- */
+
 
         KlientBanku klient3 = new KlientBankuBlik("Piotr", "Wójcik", "696969696");
         klient3.dodaj();
@@ -38,6 +39,7 @@ public class Main {
         klient3.aktualizuj("Nowy","klinent");
         klient3.wyszukaj("Kasiarzyna","Kwialska");
         //klient3.usun();
+
 
 
     }
