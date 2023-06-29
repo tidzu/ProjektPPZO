@@ -27,9 +27,8 @@ public void setNazwisko(String nazwisko)
 
     public abstract void dodaj();
 
-    public abstract void aktualizuj();
+    public abstract void aktualizuj(String newImie, String newNazwisko);
 
-    public abstract void wyszukaj(String id);
     public abstract void wyszukaj(String imie, String Nazwisko);
     public abstract void wyszukaj();
 

@@ -1,4 +1,8 @@
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 public  class KlientBankuDowod extends KlientBanku {
     private String numerDowodu;
@@ -12,7 +16,9 @@ public  class KlientBankuDowod extends KlientBanku {
         return numerDowodu;
     }
 
-    public void setNumerDowodu(String numerDowodu) {this.numerDowodu = numerDowodu;    }
+    public void setNumerDowodu(String numerDowodu) {
+        this.numerDowodu = numerDowodu;
+    }
 
     @Override
     public void identyfikuj() {
@@ -21,12 +27,9 @@ public  class KlientBankuDowod extends KlientBanku {
 
     @Override
     public void dodaj() {
-        // Additional logic for adding a client with a payment card
-        // For example, adding the client to a file, checking the uniqueness of the card number, etc.
+
         System.out.println("Dodawanie klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerDowodu);
 
-        // Add your specific logic here to add the client with a payment card
-        // For example:
         try {
             // 1. Open the file in append mode
             BufferedWriter writer = new BufferedWriter(new FileWriter("idClients.txt", true));
@@ -34,7 +37,7 @@ public  class KlientBankuDowod extends KlientBanku {
             // 2. Check if the card number is unique
             boolean isUnique = isCardNumberUnique(numerDowodu);
             if (!isUnique) {
-                System.out.println("Error: Card number already exists in the file. Please choose a different card number.");
+                System.out.println("Błąd! klient z takim numerem ID już istnieje.");
                 // Handle the error condition as per your application's requirements
                 writer.close(); // Close the file writer
                 return;
@@ -47,7 +50,7 @@ public  class KlientBankuDowod extends KlientBanku {
             // 4. Close the file writer
             writer.close();
 
-            System.out.println("Client with payment card added successfully.");
+            System.out.println("Klient z podanym numerem dowodu poprawnie dodany do bazy.");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -56,17 +59,59 @@ public  class KlientBankuDowod extends KlientBanku {
     }
 
     @Override
-    public void aktualizuj() {
+    public void aktualizuj(String newImie, String newNazwisko) {
         System.out.println("Aktualizacja klienta (dowód osobisty): " + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
-        // Logika aktualizacji klienta z dowodem osobistym
-        // np. aktualizacja danych w bazie danych, zmiana numeru dowodu, itp.
-    }
+        System.out.println("Nowe dane (dowód osobisty): " + newImie + " " + newNazwisko + ", numer dowodu: " + numerDowodu);
 
-    @Override
-    public void wyszukaj(String id) {
-        System.out.println("Wyszukiwanie klienta (dowód osobisty): "+ "imie" +id+ getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
-        // Logika wyszukiwania klienta z dowodem osobistym
-        // np. wyszukanie klienta w bazie danych po numerze dowodu
+        try {
+            // Open the file in read mode
+            BufferedReader reader = new BufferedReader(new FileReader("idClients.txt"));
+
+            // Create a temporary file to store the updated content
+            File tempFile = new File("tempFile.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+
+            // Read each line from the file and update the client data if the card number matches
+            String line;
+            boolean found = false;
+            while ((line = reader.readLine()) != null) {
+                String[] clientData = line.split(",");
+                if (clientData.length >= 3 && clientData[2].equals(numerDowodu)) {
+                    found = true;
+                    line = newImie + "," + newNazwisko + "," + numerDowodu; // Update the line with new client data
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+
+            reader.close();
+            writer.close();
+
+            // Replace the original file with the temporary file
+            if (found) {
+                File originalFile = new File("idClients.txt");
+
+                // Delete the original file
+                if (!originalFile.delete()) {
+                    System.out.println("Błąd! Nie można usunąć oryginalnego pliku");
+                    return;
+                }
+
+                // Rename the temporary file to the original file
+                if (!tempFile.renameTo(originalFile)) {
+                    System.out.println("Błąd! Nie można zmienić nazwy oryginalnego pliku.");
+                    return;
+                }
+
+                System.out.println("Dane klienta zaktualizowane pomyślnie.");
+            } else {
+                System.out.println("Błąd: Nie znaleziono klienta o podanym numerze dowodu.");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Handle any file I/O errors here
+        }
     }
 
 
@@ -142,6 +187,7 @@ public  class KlientBankuDowod extends KlientBanku {
             e.printStackTrace();
         }
     }
+
     @Override
     public void usun() {
         System.out.println("Usuwanie klienta (dowód osobisty): " + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
@@ -161,7 +207,7 @@ public  class KlientBankuDowod extends KlientBanku {
                 String[] clientData = line.split(",");
                 if (clientData.length >= 3 && clientData[2].equals(numerDowodu)) {
                     found = true;
-                    continue; // Skip the line with the matching card number
+                    continue; // Pomiń linię jeśli zgadza się numer id
                 }
                 writer.write(line);
                 writer.newLine();
@@ -176,19 +222,17 @@ public  class KlientBankuDowod extends KlientBanku {
 
                 // Delete the original file
                 if (!originalFile.delete()) {
-                    System.out.println("Error: Failed to delete the original file.");
+                    System.out.println("Błąd! nie można usunąć pliku");
                     return;
                 }
-
-                // Rename the temporary file to the original file
                 if (!tempFile.renameTo(originalFile)) {
-                    System.out.println("Error: Failed to rename the temporary file.");
+                    System.out.println("Błąd: Nie można zmienić nazwy oryginału.");
                     return;
                 }
 
-                System.out.println("Client with payment card removed successfully.");
+                System.out.println("Klient z tym numerem ID poprawnie usunięty.");
             } else {
-                System.out.println("Error: Client with the specified card number not found.");
+                System.out.println("Błąd Klient z tym numerem ID nie znaleziony.");
             }
 
         } catch (IOException e) {
@@ -199,17 +243,18 @@ public  class KlientBankuDowod extends KlientBanku {
 
 
     // Helper method to check if the card number is unique in the file
-    private boolean isCardNumberUnique(String idNumber ) throws IOException {
-        java.nio.file.Path filePath = java.nio.file.Paths.get("idClients.txt");
+    private boolean isCardNumberUnique(String idNumber) throws IOException {
+        Path filePath = Paths.get("idClients.txt");
 
-        if (java.nio.file.Files.exists(filePath)) {
+        if (Files.exists(filePath)) {
             // Read each line from the file and check if the card number exists
-            try (java.util.stream.Stream<String> lines = java.nio.file.Files.lines(filePath)) {
-                return lines.noneMatch(line -> line.contains(idNumber));
+            try (Stream<String> lines = Files.lines(filePath)) {
+                return lines.noneMatch(line -> {
+                    String[] clientData = line.split(",");
+                    return clientData.length >= 3 && clientData[2].equals(idNumber);
+                });
             }
         }
-
         return true; // If the file doesn't exist, consider the card number as unique
     }
-
 }

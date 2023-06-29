@@ -8,10 +8,19 @@ public class Main {
         KlientBanku klient1 = new KlientBankuDowod("Jan", "Kowalski", "AB123456");
         klient1.identyfikuj();
         klient1.dodaj();
-        klient1.aktualizuj();
-        klient1.wyszukaj("ABV123456");
-        klient1.usun();
 
+        klient1.aktualizuj("Jacek", "Placek");
+
+        klient1.wyszukaj();
+        klient1.setImie("Jamnusz");
+        klient1.setNazwisko("Mr");
+        ((KlientBankuDowod) klient1).setNumerDowodu("HWDPJP100");;
+        klient1.dodaj();
+        klient1.wyszukaj("Jan","Banach");
+        klient1.identyfikuj();
+       // klient1.usun();
+
+/*
         KlientBanku klient2 = new KlientBankuKarta("Anna", "Nowak", "1234567890123456");
         klient2.identyfikuj();
         klient2.dodaj();
@@ -25,5 +34,7 @@ public class Main {
         klient3.aktualizuj();
         klient3.wyszukaj();
         klient3.usun();
+
+ */
     }
 }

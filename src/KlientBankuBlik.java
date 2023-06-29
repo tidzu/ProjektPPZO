@@ -23,18 +23,12 @@ public class KlientBankuBlik extends KlientBanku {
     }
 
     @Override
-    public void aktualizuj() {
+    public void aktualizuj(String newImie, String newNazwisko) {
         System.out.println("Aktualizacja klienta (BLIK): " + getImie() + " " + getNazwisko() + ", numer BLIK: " + numerBlik);
         // Logika aktualizacji klienta z BLIKiem
         // np. aktualizacja danych w bazie danych, zmiana numeru BLIK, itp.
     }
 
-    @Override
-    public void wyszukaj(String Id) {
-        System.out.println("Wyszukiwanie klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerBlik);
-        // Logika wyszukiwania klienta z kartą płatniczą
-        // np. wyszukanie klienta w bazie danych po numerze karty
-    }
     @Override
     public void wyszukaj() {
         System.out.println("Wyszukiwanie klienta (karta płatnicza): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerBlik);

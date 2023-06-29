@@ -57,18 +57,13 @@ public class KlientBankuKarta extends KlientBanku {
 
 
     @Override
-    public void aktualizuj() {
+    public void aktualizuj(String newImie, String newNazwisko) {
         System.out.println("Aktualizacja klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
         // Logika aktualizacji klienta z kartą płatniczą
         // np. aktualizacja danych w bazie danych, zmiana numeru karty, itp.
     }
 
-    @Override
-    public void wyszukaj(String Id) {
-        System.out.println("Wyszukiwanie klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerKarty);
-        // Logika wyszukiwania klienta z kartą płatniczą
-        // np. wyszukanie klienta w bazie danych po numerze karty
-    }
+
     @Override
     public void wyszukaj() {
         System.out.println("Wyszukiwanie klienta (karta płatnicza): "+ "imie" + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerKarty);
