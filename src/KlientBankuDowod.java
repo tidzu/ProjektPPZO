@@ -17,7 +17,13 @@ public  class KlientBankuDowod extends KlientBanku {
     }
 
     public void setNumerDowodu(String numerDowodu) {
-        this.numerDowodu = numerDowodu;
+        if (sprawdzNumerId(numerDowodu)) {
+            this.numerDowodu = numerDowodu;
+        }
+        else{
+            System.out.println("Błędny numer ID prawidłowy jest w stylu ABC12345");
+            this.numerDowodu = "FAL000000";
+        }
     }
 
     @Override
@@ -28,33 +34,38 @@ public  class KlientBankuDowod extends KlientBanku {
     @Override
     public void dodaj() {
 
-        System.out.println("Dodawanie klienta (karta płatnicza): " + getImie() + " " + getNazwisko() + ", numer karty: " + numerDowodu);
+        System.out.println("Dodawanie klienta (dowód osobisty): " + getImie() + " " + getNazwisko() + ", numer dowodu: " + numerDowodu);
+        if (sprawdzNumerId(numerDowodu)) {
 
-        try {
-            // 1. Open the file in append mode
-            BufferedWriter writer = new BufferedWriter(new FileWriter("idClients.txt", true));
+            try {
+                // 1. Open the file in append mode
+                BufferedWriter writer = new BufferedWriter(new FileWriter("idClients.txt", true));
 
-            // 2. Check if the card number is unique
-            boolean isUnique = isCardNumberUnique(numerDowodu);
-            if (!isUnique) {
-                System.out.println("Błąd! klient z takim numerem ID już istnieje.");
-                // Handle the error condition as per your application's requirements
-                writer.close(); // Close the file writer
-                return;
+                // 2. Check if the card number is unique
+                boolean isUnique = isCardNumberUnique(numerDowodu);
+                if (!isUnique) {
+                    System.out.println("Błąd! klient z takim numerem ID już istnieje.");
+                    // Handle the error condition as per your application's requirements
+                    writer.close(); // Close the file writer
+                    return;
+                }
+
+                // 3. If unique, write the client details (name, card number) to the file
+                writer.write(getImie() + "," + getNazwisko() + "," + numerDowodu);
+                writer.newLine();
+
+                // 4. Close the file writer
+                writer.close();
+
+                System.out.println("Klient z podanym numerem dowodu poprawnie dodany do bazy.");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                // Handle any file I/O errors here
             }
-
-            // 3. If unique, write the client details (name, card number) to the file
-            writer.write(getImie() + "," + getNazwisko() + "," + numerDowodu);
-            writer.newLine();
-
-            // 4. Close the file writer
-            writer.close();
-
-            System.out.println("Klient z podanym numerem dowodu poprawnie dodany do bazy.");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            // Handle any file I/O errors here
+        }
+        else {
+            System.out.println("Błąd! klient z takim numerem ID nie może zostać dodany.");
         }
     }
 
@@ -256,5 +267,25 @@ public  class KlientBankuDowod extends KlientBanku {
             }
         }
         return true; // If the file doesn't exist, consider the card number as unique
+    }
+    private boolean sprawdzNumerId(String numerId) {
+        // Sprawdzenie długości numeru ID
+        if (numerId.length() >= 10) {
+            return false;
+        }
+
+        // Sprawdzenie pierwszej części (litery)
+        String litery = numerId.substring(0, 3);
+        if (!litery.matches("[a-zA-Z]{3}")) {
+            return false;
+        }
+
+        // Sprawdzenie drugiej części (cyfry)
+        String cyfry = numerId.substring(3);
+        if (!cyfry.matches("[0-9]{3,7}")) {
+            return false;
+        }
+
+        return true;
     }
 }

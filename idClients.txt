@@ -5,3 +5,7 @@ Jan,Kow,AB1234563
 Jan,Banach,ASF0505
 Jamnusz,Mr,HWDPJP100
 Jacek,Placek,AB123456
+Jamnusz,Mr,FAL000000
+Jamnusz,Mr,ASD0060089
+Jacek,Placek,ABC123456
+Jamnusz,Mr,ASD006009
